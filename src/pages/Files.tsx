@@ -257,6 +257,8 @@ const [progress, setProgress] = useState(0);
                 onSelect={setSelectedFolderId}
                 onCreateClick={isCompanyAdmin ? (parentId) => createFolder("Nova pasta", parentId) : undefined}
                 canCreate={isCompanyAdmin}
+                canDelete={isCompanyAdmin}
+                companyId={companyId}
                 rootLabel="Raiz"
               />
             )}

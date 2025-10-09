@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import { Folder, FolderPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import DeleteFolderDialog from "@/components/files/DeleteFolderDialog";
 
 export type FolderNode = {
   id: string;
@@ -17,6 +18,8 @@ type Props = {
   onSelect: (id: string | null) => void;
   onCreateClick?: (parentId: string | null) => void;
   canCreate?: boolean;
+  canDelete?: boolean;
+  companyId?: string;
   rootLabel?: string;
 };
 
@@ -42,6 +45,8 @@ function TreeItem({
   onSelect,
   onCreateClick,
   canCreate,
+  canDelete,
+  companyId,
 }: {
   node: FolderNode;
   depth: number;
@@ -49,6 +54,8 @@ function TreeItem({
   onSelect: (id: string | null) => void;
   onCreateClick?: (parentId: string | null) => void;
   canCreate?: boolean;
+  canDelete?: boolean;
+  companyId?: string;
 }) {
   const isSelected = selectedId === node.id;
   return (
@@ -63,20 +70,31 @@ function TreeItem({
       >
         <Folder className="h-4 w-4 text-muted-foreground" />
         <span className="text-sm">{node.name}</span>
-        {canCreate && onCreateClick && (
-          <Button
-            size="icon"
-            variant="ghost"
-            className="ml-auto h-6 w-6"
-            onClick={(e) => {
-              e.stopPropagation();
-              onCreateClick(node.id);
-            }}
-            title="Nova subpasta"
-          >
-            <FolderPlus className="h-3 w-3" />
-          </Button>
-        )}
+        <div className="ml-auto flex items-center gap-1">
+          {canCreate && onCreateClick && (
+            <Button
+              size="icon"
+              variant="ghost"
+              className="h-6 w-6"
+              onClick={(e) => {
+                e.stopPropagation();
+                onCreateClick(node.id);
+              }}
+              title="Nova subpasta"
+            >
+              <FolderPlus className="h-3 w-3" />
+            </Button>
+          )}
+          {canDelete && companyId && (
+            <div onClick={(e) => e.stopPropagation()}>
+              <DeleteFolderDialog
+                folderId={node.id}
+                folderName={node.name}
+                companyId={companyId}
+              />
+            </div>
+          )}
+        </div>
       </div>
       {node.children && node.children.length > 0 && (
         <div className="space-y-1">
@@ -89,6 +107,8 @@ function TreeItem({
               onSelect={onSelect}
               onCreateClick={onCreateClick}
               canCreate={canCreate}
+              canDelete={canDelete}
+              companyId={companyId}
             />
           ))}
         </div>
@@ -103,6 +123,8 @@ export default function FolderTree({
   onSelect,
   onCreateClick,
   canCreate = false,
+  canDelete = false,
+  companyId,
   rootLabel = "Root",
 }: Props) {
   const roots = useMemo(() => buildTree(folders), [folders]);
@@ -143,6 +165,8 @@ export default function FolderTree({
           onSelect={onSelect}
           onCreateClick={onCreateClick}
           canCreate={canCreate}
+          canDelete={canDelete}
+          companyId={companyId}
         />
       ))}
     </div>

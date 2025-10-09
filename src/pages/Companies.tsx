@@ -6,11 +6,17 @@ import { supabase } from "@/integrations/supabase/client";
 import { useIsSuperAdmin } from "@/hooks/useIsSuperAdmin";
 import CreateCompanyDialog from "@/components/admin/CreateCompanyDialog";
 import InviteUserDialog from "@/components/admin/InviteUserDialog";
+import EditCompanyDialog from "@/components/admin/EditCompanyDialog";
+import NotificationSettingsDialog from "@/components/admin/NotificationSettingsDialog";
 
 type CompanyRow = {
   id: string;
   name: string;
   branch: string | null;
+  cnpj: string | null;
+  city: string | null;
+  state: string | null;
+  logo_url: string | null;
 };
 
 export default function Companies() {
@@ -21,7 +27,7 @@ export default function Companies() {
     queryFn: async (): Promise<CompanyRow[]> => {
       const { data, error } = await supabase
         .from("companies")
-        .select("id,name,branch")
+        .select("id,name,branch,cnpj,city,state,logo_url")
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data as CompanyRow[];
@@ -51,17 +57,36 @@ export default function Companies() {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead>Logo</TableHead>
                 <TableHead>Nome</TableHead>
                 <TableHead>Filial</TableHead>
-                <TableHead>ID</TableHead>
+                <TableHead>Cidade</TableHead>
+                <TableHead>Estado</TableHead>
+                {isSuperAdmin && <TableHead>Ações</TableHead>}
               </TableRow>
             </TableHeader>
             <TableBody>
               {data!.map((c) => (
                 <TableRow key={c.id}>
+                  <TableCell>
+                    {c.logo_url ? (
+                      <img src={c.logo_url} alt={c.name} className="h-8 w-8 object-cover rounded" />
+                    ) : (
+                      <div className="h-8 w-8 bg-muted rounded" />
+                    )}
+                  </TableCell>
                   <TableCell>{c.name}</TableCell>
                   <TableCell>{c.branch ?? "—"}</TableCell>
-                  <TableCell className="text-muted-foreground">{c.id}</TableCell>
+                  <TableCell>{c.city ?? "—"}</TableCell>
+                  <TableCell>{c.state ?? "—"}</TableCell>
+                  {isSuperAdmin && (
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <EditCompanyDialog company={c} />
+                        <NotificationSettingsDialog companyId={c.id} />
+                      </div>
+                    </TableCell>
+                  )}
                 </TableRow>
               ))}
             </TableBody>

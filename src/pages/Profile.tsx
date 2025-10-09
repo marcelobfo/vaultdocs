@@ -5,9 +5,12 @@ import { Button } from "@/components/ui/button";
 import { getUser, signOut } from "@/lib/auth";
 import RequestAccessForm from "@/components/profile/RequestAccessForm";
 import AccountRequestsAdmin from "@/components/admin/AccountRequestsAdmin";
+import PromoteSuperAdminDialog from "@/components/admin/PromoteSuperAdminDialog";
+import { useIsSuperAdmin } from "@/hooks/useIsSuperAdmin";
 
 export default function Profile() {
   const [email, setEmail] = useState<string | null>(null);
+  const isSuperAdmin = useIsSuperAdmin();
 
   useEffect(() => {
     getUser().then(({ user }) => setEmail(user?.email ?? null));
@@ -30,6 +33,17 @@ export default function Profile() {
 
       {/* Formulário para usuários solicitarem acesso */}
       <RequestAccessForm />
+
+      {/* Super Admin: Adicionar outros super admins */}
+      {isSuperAdmin && (
+        <div className="glass-card rounded-lg p-6 mb-6">
+          <h2 className="text-lg font-semibold mb-4">Gerenciar Super Admins</h2>
+          <p className="text-sm text-muted-foreground mb-4">
+            Adicione outros usuários como super administradores do sistema.
+          </p>
+          <PromoteSuperAdminDialog />
+        </div>
+      )}
 
       {/* Painel de aprovação para super administradores */}
       <div className="mt-6">

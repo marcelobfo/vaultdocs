@@ -1,1 +1,13 @@
 project_id = "egldvtrgyfpbxloczppe"
+
+[functions.send-notification-email]
+verify_jwt = false
+
+[functions.trigger-webhook]
+verify_jwt = false
+
+[functions.check-expiring-files]
+verify_jwt = false
+
+[functions.notify-new-file]
+verify_jwt = false
