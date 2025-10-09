@@ -244,6 +244,101 @@ export type Database = {
           },
         ]
       }
+      notification_logs: {
+        Row: {
+          company_id: string
+          error_message: string | null
+          file_id: string | null
+          id: string
+          notification_type: string
+          recipient_email: string
+          sent_at: string | null
+          status: string | null
+        }
+        Insert: {
+          company_id: string
+          error_message?: string | null
+          file_id?: string | null
+          id?: string
+          notification_type: string
+          recipient_email: string
+          sent_at?: string | null
+          status?: string | null
+        }
+        Update: {
+          company_id?: string
+          error_message?: string | null
+          file_id?: string | null
+          id?: string
+          notification_type?: string
+          recipient_email?: string
+          sent_at?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_logs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notification_logs_file_id_fkey"
+            columns: ["file_id"]
+            isOneToOne: false
+            referencedRelation: "files"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notification_settings: {
+        Row: {
+          company_id: string
+          created_at: string | null
+          custom_message: string | null
+          expiration_days_before: number | null
+          id: string
+          notify_expiration: boolean | null
+          notify_new_files: boolean | null
+          updated_at: string | null
+          webhook_secret: string | null
+          webhook_url: string | null
+        }
+        Insert: {
+          company_id: string
+          created_at?: string | null
+          custom_message?: string | null
+          expiration_days_before?: number | null
+          id?: string
+          notify_expiration?: boolean | null
+          notify_new_files?: boolean | null
+          updated_at?: string | null
+          webhook_secret?: string | null
+          webhook_url?: string | null
+        }
+        Update: {
+          company_id?: string
+          created_at?: string | null
+          custom_message?: string | null
+          expiration_days_before?: number | null
+          id?: string
+          notify_expiration?: boolean | null
+          notify_new_files?: boolean | null
+          updated_at?: string | null
+          webhook_secret?: string | null
+          webhook_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_settings_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
